@@ -2,6 +2,7 @@ import requests
 import json
 import random
 import html
+import time
 
 no_opt = ['n','no','quit','exit']
 yes_opt = ['y','yes']
@@ -12,7 +13,7 @@ if char.lower() in yes_opt:
     while char.lower() in yes_opt:
         req = requests.get("https://opentdb.com/api.php?amount=1")
         if req.status_code != 200:
-            char = input("Sorry!! There was a problem, press 'enter' to start again or type 'quit' to quit the game")
+            char = input("\nSorry!! There was a problem, press 'enter' to start again or type 'quit' to quit the game")
         else:
             number = 1
             data = json.loads(req.text)
@@ -23,7 +24,7 @@ if char.lower() in yes_opt:
             random.shuffle(options)
 
             # html.unescape() is used to avoid html quotes to print with output
-            print(html.unescape(question))
+            print('\n',html.unescape(question))
             for i in options:
                 print(number,html.unescape(i))
                 number += 1
@@ -33,7 +34,7 @@ if char.lower() in yes_opt:
                 try:
                     answer = int(input())
                     if answer > len(options) or answer <= 0:
-                        print("INVALID INPUT.....Please enter correct answer")
+                        print("\nINVALID INPUT.....Please enter correct answer")
                     else:
                         print("Valid Input")
                         break
@@ -41,20 +42,22 @@ if char.lower() in yes_opt:
                     print("INVALID INPUT.....")
                         
             if options[answer - 1].lower() == correct_ans.lower():
-                print("\nCongratulations !! You have answered correctly. \nThe correct answer was : ",correct_ans)
+                print("\nCongratulations !! You have answered correctly. \nThe correct answer was : ",html.unescape(correct_ans))
                 score_correct += 1
 
             else :
-                print("\nSorry !!! Incorrect Answer")
-                print("The correct answer is : ",  correct_ans.capitalize())
+                print("\nSorry !!! {} is Incorrect Answer".format(options[answer-1]))
+                print("\nThe correct answer is : ",  html.unescape(correct_ans.capitalize()))
                 score_incorrect += 1
                 
             char = input("\nDo you want to play again ?? : ")
-            if char.lower() in no_opt :
-                print("Number of answers you have given correctly : ",score_correct)
+            if char.lower() in no_opt or (char.lower() not in yes_opt and char.lower() not in no_opt):
+                print("\nNumber of answers you have given correctly : ",score_correct)
                 print("Number of answers you have given incorrectly : ",score_incorrect)
+                time.sleep(1)
                 print("\nThanks for playing ...!!\n")
                 exit()
+            
 else :
     print("\nThank You ! for your response .... !!!\n")
 
